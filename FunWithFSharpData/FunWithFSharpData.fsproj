@@ -53,6 +53,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <None Include="HtmlProviderExample.fsx" />
     <Content Include="packages.config" />
+    <None Include="JsonProviderExample_StockQuotes.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Data">
