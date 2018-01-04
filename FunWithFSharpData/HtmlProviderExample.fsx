@@ -26,11 +26,11 @@ type Episode =
 
 type EpisodeInfo = HtmlProvider<Season1>
 
-let getEpisodes (seasons : EpisodeInfo) =
+let getEpisodes seasonNum (seasons : EpisodeInfo) =
     seasons.Tables.Episodes.Rows
     |> Seq.chunkBySize 2 
     |> Seq.map (fun e -> { Title = e.[0].Title |> String.collect (fun c -> if c = '"' then "" else string c)
-                           Season = 1
+                           Season = seasonNum
                            Number = e.[0].``No. in season`` |> int
                            Description = e.[1].Title })
     |> Seq.toArray
@@ -39,9 +39,9 @@ let printEpisodes (episodes : Episode array) =
     episodes
     |> Array.iter (fun e -> printfn "%A\r\n" e)
 
-let s1 = EpisodeInfo.Load(Season1) |> getEpisodes
-let s2 = EpisodeInfo.Load(Season2) |> getEpisodes
-let s3 = EpisodeInfo.Load(Season3) |> getEpisodes
+let s1 = EpisodeInfo.Load(Season1) |> getEpisodes 1
+let s2 = EpisodeInfo.Load(Season2) |> getEpisodes 2
+let s3 = EpisodeInfo.Load(Season3) |> getEpisodes 3
 
 // Test
 [| s1; s2; s3 |] |> Array.concat |> printEpisodes
