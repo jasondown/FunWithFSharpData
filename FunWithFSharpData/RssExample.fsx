@@ -38,3 +38,6 @@ wiredTopStories 3
 wiredTopStories 10
 myBlog 5
 myBlog 1000 // Should not error; grabs as many as availabe
+
+// Should explore real unit tests in F#
+// Should look into async for the loading and printing to reduce lag on large number of articles.
