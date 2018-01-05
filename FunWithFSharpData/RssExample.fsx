@@ -3,26 +3,38 @@
 open FSharp.Data
 
 [<Literal>]
-let RssFeedUrl = "http://www.jason-down.com/feed/"
+let SampleFeed = "http://www.jason-down.com/feed/"
 
-type RssFeed = XmlProvider<RssFeedUrl>
+type RssFeed = XmlProvider<SampleFeed>
 
 type Article =
     { Title         : string
       Description   : string
       Link          : string }
 
-let feed = RssFeed.GetSample()
+let hr = "-----------------------------------------------------------------------------------"
 
-let getRecentArticles (n : int) (rss : RssFeed.Channel) =
+let getFeed (url : string) = RssFeed.Load(url).Channel
+
+let getRecentArticles n (rss : RssFeed.Channel) =
     rss.Items
-    |> Seq.take n
+    |> Seq.truncate n
     |> Seq.map (fun i -> { Title = i.Title; Description = i.Description; Link = i.Link })
     |> Seq.toArray
 
 let printArticles articles =
     articles
-    |> Array.iter (fun a -> printfn "Title: %s\n\rDescription: %s\n\rLink: %s\n\r" a.Title a.Description a.Link)
+    |> Array.iter (fun a -> printfn "%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n" hr a.Title a.Description a.Link hr)
 
-//Test most recent blog posts
-feed.Channel |> getArticlesFromFeed 5 |> printArticles
+let printRecentArticles url n =
+    url |> getFeed |> getRecentArticles n |> printArticles
+
+// Fun with partial function application
+let wiredTopStories = printRecentArticles "https://www.wired.com/feed/rss"
+let myBlog = printRecentArticles "http://www.jason-down.com/feed/"
+
+// Test it out
+wiredTopStories 3
+wiredTopStories 10
+myBlog 5
+myBlog 1000 // Should not error; grabs as many as availabe
