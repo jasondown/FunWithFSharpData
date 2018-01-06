@@ -96,3 +96,4 @@ for i = 0 to 9 do
 for i = 0 to 9 do
     getTechGiants'() |> printLatestPrices
 #time
+
