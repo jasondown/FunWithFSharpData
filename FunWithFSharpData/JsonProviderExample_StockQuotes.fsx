@@ -72,9 +72,27 @@ let printLatestPrices (quotes : StockQuote.Root list) =
     |> List.iter (fun q -> printLatestPrice q)
 
 let getQuotes (symbols : string list) =
-    symbols
+    symbols 
     |> List.map (fun s -> StockQuote.Load(getQuoteEndPoint s))
 
+let getQuotes' (symbols : string list) =
+    symbols
+    |> List.map (fun s -> StockQuote.AsyncLoad(getQuoteEndPoint s))
+    |> Async.Parallel
+    |> Async.RunSynchronously
+    |> Array.toList
+
 let getTechGiants () = ["aapl";"msft";"goog";"fb";"amzn";"intc";"orcl";"ibm";"dvmt";"ebay";"baba";"hpe";"csco"] |> getQuotes
-    
-getTechGiants() |> printLatestPrices
+let getTechGiants' () = ["aapl";"msft";"goog";"fb";"amzn";"intc";"orcl";"ibm";"dvmt";"ebay";"baba";"hpe";"csco"] |> getQuotes'
+
+// Synchronously
+#time
+for i = 0 to 9 do
+    getTechGiants() |> printLatestPrices
+#time
+
+// Asynchronously
+#time
+for i = 0 to 9 do
+    getTechGiants'() |> printLatestPrices
+#time
