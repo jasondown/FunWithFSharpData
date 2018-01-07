@@ -51,11 +51,16 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <None Include="HtmlProviderExample.fsx" />
     <Content Include="packages.config" />
+    <None Include="HtmlProviderExample.fsx" />
     <None Include="JsonProviderExample_StockQuotes.fsx" />
+    <None Include="RssExample.fsx" />
+    <None Include="GolfMajors.fsx" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Charting">
+      <HintPath>..\packages\FSharp.Charting.0.91.1\lib\net45\FSharp.Charting.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Data">
       <HintPath>..\packages\FSharp.Data.2.4.3\lib\net45\FSharp.Data.dll</HintPath>
     </Reference>
