@@ -4,6 +4,7 @@
 open FSharp.Data
 open FSharp.Charting
 open System
+open System.Drawing
 
 [<Literal>]
 let WikiSource = @"https://en.wikipedia.org/wiki/List_of_men%27s_major_championships_winning_golfers"
@@ -62,7 +63,8 @@ let totalWinsChart (min : int) =
     getTotalWins min
     |> Seq.map (fun g -> (g.Name, g.Wins))
     |> Chart.Column
-    |> Chart.WithStyling (Color = System.Drawing.Color.Green)
+    |> Chart.WithDataPointLabels (Label = "#VAL")
+    |> Chart.WithStyling (Color = Color.Green)
     |> Chart.WithTitle (Text = sprintf "Golf Major Winners (%i or More Wins)" min)
     |> Chart.WithXAxis (Title = "Golfer", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Angle = -45, Interval = 1.0))
     |> Chart.WithYAxis (Title = "Total Major Wins", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Interval = 2.0))
@@ -72,10 +74,11 @@ let winSpanRangeChart (min : int) =
     |> Seq.sortBy (fun g -> fst g.WinningSpan)
     |> Seq.map (fun g -> (g.Name, fst g.WinningSpan, snd g.WinningSpan))
     |> Chart.RangeColumn
+    |> Chart.WithDataPointLabels (Label = "#VAL")
     |> Chart.WithTitle (Text = sprintf "Golf Major Winning Span (%i or More Years)" min)
     |> Chart.WithXAxis (Title = "Golfer", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Angle = -45, Interval = 1.0))
     |> Chart.WithYAxis (Title = "Year", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Interval = 5.0))
     |> Chart.WithYAxis (Max = 2020.0, Min = 1850.0)
 
-9 |> totalWinsChart |> Chart.Show
+7 |> totalWinsChart |> Chart.Show
 5 |> winSpanRangeChart |> Chart.Show
