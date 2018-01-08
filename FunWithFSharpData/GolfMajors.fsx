@@ -5,6 +5,7 @@ open FSharp.Data
 open FSharp.Charting
 open System
 open System.Drawing
+open FSharp.Charting.ChartTypes
 
 [<Literal>]
 let WikiSource = @"https://en.wikipedia.org/wiki/List_of_men%27s_major_championships_winning_golfers"
@@ -53,14 +54,16 @@ let getTotalWins (min : int) =
     Wiki.Load(WikiSource) 
     |> getGolfers 
     |> Seq.filter (fun g -> g.Wins >= min)
+    |> Seq.sortByDescending (fun g -> g.WinningSpan)
 
 let getTotalSpan (min : int) =
     Wiki.Load(WikiSource)
     |> getGolfers
     |> Seq.filter (fun g -> g.WinningSpanLength >= min)
+    |> Seq.sortBy (fun g -> fst g.WinningSpan)
 
-let totalWinsChart (min : int) = 
-    getTotalWins min
+let totalWinsChart (golfers : seq<Golfer>) = 
+    golfers
     |> Seq.map (fun g -> (g.Name, g.Wins))
     |> Chart.Column
     |> Chart.WithDataPointLabels (Label = "#VAL")
@@ -69,16 +72,21 @@ let totalWinsChart (min : int) =
     |> Chart.WithXAxis (Title = "Golfer", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Angle = -45, Interval = 1.0))
     |> Chart.WithYAxis (Title = "Total Major Wins", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Interval = 2.0))
 
-let winSpanRangeChart (min : int) =
-    getTotalSpan min
-    |> Seq.sortBy (fun g -> fst g.WinningSpan)
+let winSpanRangeChart (golfers : seq<Golfer>) =
+    let min = 
+        let g = golfers |> Seq.minBy (fun g -> fst g.WinningSpan)
+        g.WinningSpan |> fst |> float
+    let max = 
+        let g = golfers |> Seq.maxBy (fun g -> snd g.WinningSpan)
+        g.WinningSpan |> snd |> float
+    golfers
     |> Seq.map (fun g -> (g.Name, fst g.WinningSpan, snd g.WinningSpan))
     |> Chart.RangeColumn
-    |> Chart.WithDataPointLabels (Label = "#VAL")
+    |> Chart.WithDataPointLabels (Label = "#VALY2\n#VALY", BarLabelPosition = BarLabelPosition.Right)
     |> Chart.WithTitle (Text = sprintf "Golf Major Winning Span (%i or More Years)" min)
     |> Chart.WithXAxis (Title = "Golfer", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Angle = -45, Interval = 1.0))
     |> Chart.WithYAxis (Title = "Year", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Interval = 5.0))
-    |> Chart.WithYAxis (Max = 2020.0, Min = 1850.0)
+    |> Chart.WithYAxis (Max = max, Min = min)
 
-7 |> totalWinsChart |> Chart.Show
-5 |> winSpanRangeChart |> Chart.Show
+7 |> getTotalWins |> totalWinsChart |> Chart.Show
+8 |> getTotalSpan |> winSpanRangeChart |> Chart.Show
