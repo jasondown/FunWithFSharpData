@@ -51,42 +51,50 @@ let getGolfers (wiki : Wiki) =
                            WinningSpanLength = span |> getLength })
 
 let getTotalWins (min : int) = 
-    Wiki.Load(WikiSource) 
-    |> getGolfers 
-    |> Seq.filter (fun g -> g.Wins >= min)
-    |> Seq.sortByDescending (fun g -> g.WinningSpan)
+    let golfers = 
+        Wiki.Load(WikiSource) 
+        |> getGolfers 
+        |> Seq.filter (fun g -> g.Wins >= min)
+        |> Seq.sortByDescending (fun g -> g.Wins)
+    (min, golfers)
 
 let getTotalSpan (min : int) =
-    Wiki.Load(WikiSource)
-    |> getGolfers
-    |> Seq.filter (fun g -> g.WinningSpanLength >= min)
-    |> Seq.sortBy (fun g -> fst g.WinningSpan)
+    let golfers =
+        Wiki.Load(WikiSource)
+        |> getGolfers
+        |> Seq.filter (fun g -> g.WinningSpanLength >= min)
+        |> Seq.sortBy (fun g -> fst g.WinningSpan)
+    (min, golfers)
 
-let totalWinsChart (golfers : seq<Golfer>) = 
+let totalWinsChart ((minWins : int), (golfers : seq<Golfer>)) = 
     golfers
     |> Seq.map (fun g -> (g.Name, g.Wins))
     |> Chart.Column
     |> Chart.WithDataPointLabels (Label = "#VAL")
     |> Chart.WithStyling (Color = Color.Green)
-    |> Chart.WithTitle (Text = sprintf "Golf Major Winners (%i or More Wins)" min)
+    |> Chart.WithTitle (Text = sprintf "Golf Major Winners (%i or More Wins)" minWins)
     |> Chart.WithXAxis (Title = "Golfer", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Angle = -45, Interval = 1.0))
     |> Chart.WithYAxis (Title = "Total Major Wins", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Interval = 2.0))
 
-let winSpanRangeChart (golfers : seq<Golfer>) =
-    let min = 
+let winSpanRangeChart ((minRange : int), (golfers : seq<Golfer>)) =
+    let firstYear = 
         let g = golfers |> Seq.minBy (fun g -> fst g.WinningSpan)
         g.WinningSpan |> fst |> float
-    let max = 
+    let lastYear = 
         let g = golfers |> Seq.maxBy (fun g -> snd g.WinningSpan)
         g.WinningSpan |> snd |> float
     golfers
     |> Seq.map (fun g -> (g.Name, fst g.WinningSpan, snd g.WinningSpan))
     |> Chart.RangeColumn
     |> Chart.WithDataPointLabels (Label = "#VALY2\n#VALY", BarLabelPosition = BarLabelPosition.Right)
-    |> Chart.WithTitle (Text = sprintf "Golf Major Winning Span (%i or More Years)" min)
+    |> Chart.WithTitle (Text = sprintf "Golf Major Winning Span (%i or More Years)" minRange)
     |> Chart.WithXAxis (Title = "Golfer", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Angle = -45, Interval = 1.0))
     |> Chart.WithYAxis (Title = "Year", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Interval = 5.0))
-    |> Chart.WithYAxis (Max = max, Min = min)
+    |> Chart.WithYAxis (Max = lastYear, Min = firstYear)
 
-7 |> getTotalWins |> totalWinsChart |> Chart.Show
-8 |> getTotalSpan |> winSpanRangeChart |> Chart.Show
+let getTotalWinsChart = getTotalWins >> totalWinsChart
+let getWinSpanRangeChart = getTotalSpan >> winSpanRangeChart
+
+// Test out the charts
+7 |> getTotalWinsChart |> Chart.Show
+10 |> getWinSpanRangeChart |> Chart.Show
