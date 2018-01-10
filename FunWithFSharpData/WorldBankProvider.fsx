@@ -12,9 +12,9 @@ let countries =
        data.Countries.China
        data.Countries.India |]
 
-[ for c in countries -> 
-    c.Indicators.``Population, female`` ]
-|> Async.Parallel
-|> Async.RunSynchronously
+[| for c in countries -> 
+    c.Indicators.``Population, female`` |]
+//|> Async.Parallel
+//|> Async.RunSynchronously
 |> Array.map Chart.Line
 |> Chart.Combine
