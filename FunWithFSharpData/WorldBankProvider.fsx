@@ -4,7 +4,9 @@
 open FSharp.Data
 open FSharp.Charting
 
-let data = WorldBankData.GetDataContext()
+type WorldBank = WorldBankDataProvider<"World Development Indicators", Asynchronous=true>
+
+let data = WorldBank.GetDataContext()
 
 let countries =
     [| data.Countries.Canada
@@ -14,7 +16,8 @@ let countries =
 
 [| for c in countries -> 
     c.Indicators.``Population, female`` |]
-//|> Async.Parallel
-//|> Async.RunSynchronously
+|> Async.Parallel
+|> Async.RunSynchronously
 |> Array.map Chart.Line
 |> Chart.Combine
+|> Chart.Show
