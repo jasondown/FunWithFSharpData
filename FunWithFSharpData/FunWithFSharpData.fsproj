@@ -56,6 +56,7 @@
     <None Include="JsonProviderExample_StockQuotes.fsx" />
     <None Include="RssExample.fsx" />
     <None Include="GolfMajors.fsx" />
+    <None Include="WorldBankProvider.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Charting">
