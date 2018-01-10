@@ -30,7 +30,7 @@ let getPopsChart (country : string) (populationInterval : float) (pops : Async<R
     |> Array.map (fun p -> Chart.Column(p, Name = sprintf "%s (%s)" p.Name country ))
     |> Chart.Combine
     |> Chart.WithXAxis (Title = "Year", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Angle = -45, Interval = 5.0))
-    |> Chart.WithYAxis (Title = "Population", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Interval = populationInterval))
+    |> Chart.WithYAxis (Title = "Population", TitleFontSize = 14.0, LabelStyle = ChartTypes.LabelStyle(Interval = populationInterval, Format = "N0"))
     |> Chart.With3D()
     |> Chart.WithTitle (sprintf "Population per year - %s" country, InsideArea = false)
     |> Chart.WithLegend(Title = "Legend", Docking = ChartTypes.Docking.Right, InsideArea = false)
