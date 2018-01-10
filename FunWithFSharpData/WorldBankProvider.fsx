@@ -15,7 +15,7 @@ let countries =
        data.Countries.India |]
 
 [| for c in countries -> 
-    c.Indicators.``Population, female`` |]
+    c.Indicators.``Population, female``, c.Indicators.``Population, male`` |]
 |> Async.Parallel
 |> Async.RunSynchronously
 |> Array.map Chart.Line
