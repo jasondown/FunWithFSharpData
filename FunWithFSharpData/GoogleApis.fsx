@@ -18,16 +18,10 @@ type ApiSummary = {
 
 let getApiSummaries (apis : GoogleApis.Root) =
     apis.Items
-    |> Array.map ( fun a ->
-        let desc = match a.Description with
-                   | Some d -> d
-                   | None -> ""
-        let doc = match a.DocumentationLink with
-                  | Some d -> d
-                  | None -> ""
+    |> Array.map (fun a -> 
         { Title = a.Title
-          Description = desc
-          Documentation = doc
+          Description = a.Description |> defaultArg <| ""
+          Documentation = a.DocumentationLink |> defaultArg <| ""
         })
 
 let generateHtml (apis : ApiSummary array) =
