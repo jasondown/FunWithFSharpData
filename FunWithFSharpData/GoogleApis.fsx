@@ -56,7 +56,7 @@ let generateHtml (apis : ApiSummary array) =
     html.ToString()
 
 let saveHtml (filePath : string) (html : string) =
-    Directory.CreateDirectory(Path.GetDirectoryName filePath) |>ignore
+    Directory.CreateDirectory(Path.GetDirectoryName filePath) |> ignore
     File.WriteAllText(filePath, html)
     printfn "Saved to %s" filePath
 
