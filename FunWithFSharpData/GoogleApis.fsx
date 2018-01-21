@@ -12,6 +12,7 @@ let apis = GoogleApis.GetSample()
 
 type ApiSummary = {
     Title : string
+    Version : string
     Description : string
     Documentation : string
     }
@@ -20,6 +21,7 @@ let getApiSummaries (apis : GoogleApis.Root) =
     apis.Items
     |> Array.map (fun a -> 
         { Title = a.Title
+          Version = a.Version
           Description = a.Description |> defaultArg <| ""
           Documentation = a.DocumentationLink |> defaultArg <| ""
         })
@@ -36,12 +38,14 @@ let generateHtml (apis : ApiSummary array) =
                 @"<tbody>" + Environment.NewLine +
                 @"<tr>" + Environment.NewLine +
                 @"<td style=""text-align: center;""><strong>Title</strong></td>" + Environment.NewLine +
+                @"<td style=""text-align: center;""><string>Version</strong></td>" + Environment.NewLine +
                 @"<td style=""text-align: center;""><strong>Description</strong></td>" + Environment.NewLine +
                 @"<td style=""text-align: center;""><strong>Documenation Link</strong></td></tr>") |> ignore
     apis
     |> Array.iter (fun a ->
         html.Append(@"<tr>" + Environment.NewLine +
                     (sprintf @"<td>%s</td>" a.Title) + Environment.NewLine +
+                    (sprintf @"<td>%s</td>" a.Version) + Environment.NewLine +
                     (sprintf @"<td>%s</td>" a.Description) + Environment.NewLine +
                     (sprintf @"<td><a href=""%s"" target=""_blank"" rel=""noopener"">%s</a></td></tr>" a.Documentation a.Documentation) + Environment.NewLine) |> ignore)
     html.Append(@"</tbody>" + Environment.NewLine +
