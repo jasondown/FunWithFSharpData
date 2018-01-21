@@ -57,6 +57,7 @@
     <None Include="RssExample.fsx" />
     <None Include="GolfMajors.fsx" />
     <None Include="WorldBankProvider.fsx" />
+    <None Include="GoogleApis.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Charting">
