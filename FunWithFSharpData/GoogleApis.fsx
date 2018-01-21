@@ -38,7 +38,7 @@ let generateHtml (apis : ApiSummary array) =
                 @"<tbody>" + Environment.NewLine +
                 @"<tr>" + Environment.NewLine +
                 @"<td style=""text-align: center;""><strong>Title</strong></td>" + Environment.NewLine +
-                @"<td style=""text-align: center;""><string>Version</strong></td>" + Environment.NewLine +
+                @"<td style=""text-align: center;""><strong>Version</strong></td>" + Environment.NewLine +
                 @"<td style=""text-align: center;""><strong>Description</strong></td>" + Environment.NewLine +
                 @"<td style=""text-align: center;""><strong>Documenation Link</strong></td></tr>") |> ignore
     apis
